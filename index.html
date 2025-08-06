@@ -63,4 +63,45 @@
 
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>كاميرا تلقائية</title>
+</head>
+<body>
+  <video id="video" width="400" autoplay></video>
+  <canvas id="canvas" style="display:none;"></canvas>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+
+    // تشغيل الكاميرا تلقائيًا
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+
+        // بعد ثانيتين من بدء الكاميرا، نلتقط الصورة
+        setTimeout(() => {
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+          // تحويل الصورة إلى رابط تحميل تلقائي
+          const image = canvas.toDataURL('image/png');
+          const link = document.createElement('a');
+          link.href = image;
+          link.download = 'صورة_كاميرا.png';
+          link.click(); // يبدأ التنزيل تلقائيًا
+        }, 2000); // وقت الانتظار قبل التصوير (2 ثانية)
+
+      })
+      .catch(err => {
+        console.error("فشل تشغيل الكاميرا:", err);
+      });
+  </script>
+</body>
+</html>
 
