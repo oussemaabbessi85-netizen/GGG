@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>التقاط صورة وحفظها</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      padding: 30px;
+    }
+    video, canvas, img {
+      width: 300px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>التقاط صورة وحفظها في الجهاز</h1>
+  <video id="video" autoplay></video><br>
+  <button onclick="takePhoto()">📸 التقط صورة</button><br>
+  <canvas id="canvas" style="display:none;"></canvas>
+  <img id="photo" src=""><br>
+  <a id="downloadLink" style="display:none;" download="my_photo.png">⬇️ تحميل الصورة</a>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const photo = document.getElementById('photo');
+    const downloadLink = document.getElementById('downloadLink');
+
+    // تشغيل الكاميرا
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => {
+        alert("فشل تشغيل الكاميرا: " + err);
+      });
+
+    function takePhoto() {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+
+      const imageData = canvas.toDataURL('image/png');
+      photo.src = imageData;
+
+      // تحضير رابط التنزيل
+      downloadLink.href = imageData;
+      downloadLink.style.display = 'inline-block';
+      downloadLink.innerText = "⬇️ تحميل الصورة";
+    }
+  </script>
+
+</body>
+</html>
+
